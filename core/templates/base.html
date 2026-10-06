@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+        rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <script src="https://kit.fontawesome.com/3c84b305d0.js" crossorigin="anonymous"></script>
+  </head>
+  <style>
+</style>
+  <body class="font-sans">
+    {% include 'nav/logged_nav.html' %}
+    {% comment %} h-screen w-full bg-gradient-to-b from-white to-blue-500 {% endcomment %}
+    <main>
+      <div>
+        {% if messages %}
+        {% for message in messages %}
+            <div class="px-2 py-1 rounded-lg
+            {% if message.tags == 'success' %}bg-green-300 text-green-600
+            {% else %}bg-red-300 text-red-600
+             {% endif %}">{{message}}</div>
+        {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock content %}
+    </main>
+
+    <footer class="text-center py-8 border-t border-gray-200">
+  <!-- Logo -->
+  <img
+    src="/static/images/bubt_logo.png"
+    alt="BUBT Logo"
+    class="mx-auto mb-4 w-24"
+  />
+
+  <!-- University Name -->
+  <h2 class="text-xl font-semibold text-gray-800">BUBT</h2>
+  <p class="text-gray-700 font-medium">
+    Bangladesh University of Business and Technology
+  </p>
+
+  <!-- Address -->
+  <p class="text-gray-600 mt-2">
+    Rupnagar, Mirpur-2, Dhaka-1216, Bangladesh
+  </p>
+
+  <!-- Phone -->
+  <p class="text-gray-600">
+    Phone: 02-4803-6351, 02-4803-6352, 02-4803-6353
+  </p>
+
+  <!-- One Stop -->
+  <p class="text-gray-600">
+    One Stop Service Center: 01810033740 (for BUBT current students)
+  </p>
+
+  <!-- Email -->
+  <p class="text-gray-600">
+    Email: <a href="mailto:info@bubt.edu.bd" class="text-blue-600">info@bubt.edu.bd</a>
+  </p>
+
+  <!-- Social Icons -->
+  <div class="flex justify-center space-x-4 mt-4"></div>
+
+  <!-- Copyright -->
+  <p class="text-gray-600 text-sm mt-4">
+    © 2025 BUBT. &nbsp;
+  </p>
+</footer>
+
+<!-- Font Awesome CDN -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+
+    <script>
+      document
+        .getElementById("menu-toggle")
+        .addEventListener("click", function () {
+          document.getElementById("mobile-menu").classList.toggle("hidden");
+        });
+
+      document
+        .getElementById("user-menu-button")
+        .addEventListener("click", function () {
+          document.getElementById("user-menu").classList.toggle("hidden");
+        });
+
+      // Close the dropdown when clicking outside
+      window.addEventListener("click", function (e) {
+        if (!document.getElementById("user-menu-button").contains(e.target)) {
+          document.getElementById("user-menu").classList.add("hidden");
+        }
+      });
+      const menuBtn = document.getElementById('menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    </script>
+  </body>
+</html>
