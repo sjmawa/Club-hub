@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 from clubs.models import ClubRole
-from events.forms import StyledFormMixin
+from core.forms import StyledFormMixin
 
 User = get_user_model()
 

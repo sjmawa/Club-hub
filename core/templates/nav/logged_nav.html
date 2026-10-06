@@ -1,0 +1,53 @@
+{% load static %}
+
+<nav class="bg-white shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
+    <!-- Left: Logo -->
+    <div class="flex items-center space-x-3">
+      <a href="#">
+        <img src="{% static 'images/bubt_logo.png' %}" alt="BUBT Logo" class="h-12 w-auto">
+      </a>
+    </div>
+
+    <!-- Center: Menu Links -->
+    <div class="hidden md:flex space-x-6 text-gray-700 font-semibold">
+      <a href="{% url 'home' %} " class="hover:text-blue-700">Home</a>
+      <a href="https://iqac.bubt.edu.bd/?_gl=1%2A1bmduss%2A_gcl_au%2AMTM0NTM1ODg0NS4xNzU4ODIzNjM5%2A_ga%2ANTcyNzk2NDIzLjE3MjcxODc3MDc.%2A_ga_X7HZKGWDKN%2AczE3NjI5MzIyMzAkbzM4JGcwJHQxNzYyOTMyMjMwJGo2MCRsMCRoMA.." 
+        class="hover:text-blue-700" 
+        target="_blank" 
+        rel="noopener noreferrer">IQAC</a>
+      <a href="{% url 'club-list' %} " class="hover:text-blue-700">Clubs</a>
+      <a href="{% url 'event-list' %} " class="hover:text-blue-700">Events</a>
+
+      <!-- Conditional Links -->
+       {% if user.is_authenticated and user.is_staff %}
+       <a href="{% url 'create-club' %}" class="hover:text-blue-700">Create Club</a>
+      <a href="{% url 'create-event' %}" class="hover:text-blue-700">Create Event</a>
+      <a href="{% url 'user-list' %}" class="hover:text-blue-700">Users</a>
+       {% else %}
+       {% endif %}
+      {% if user.is_authenticated %}
+        {% comment %} <a href="#" class="hover:text-blue-700">Profile</a> {% endcomment %}
+        <a href="{% url 'sign-out' %}" class="hover:text-red-600">Logout</a>
+      {% else %}
+        <a href="{% url 'sign-in' %}" class="hover:text-blue-700">Login</a>
+        <a href="{% url 'sign-up' %}" class="hover:text-blue-700">Register</a>
+      {% endif %}
+    </div>
+
+    <!-- Right: Search -->
+    <!-- Right: Search -->
+<form method="get" action="{% url 'search' %}" class="flex items-center w-72">
+  <input 
+    type="text" 
+    name="q"
+    value="{{ request.GET.q|default:'' }}"
+    placeholder="Search"
+    class="w-full border border-blue-400 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+  />
+  <button type="submit" class="ml-2 text-white bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-full">
+    🔍
+  </button>
+</form>
+  </div>
+</nav>
