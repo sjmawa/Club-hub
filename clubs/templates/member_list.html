@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="max-w-4xl mx-auto mt-10">
+    <h1 class="text-3xl font-bold mb-6 text-center">
+        Members of {{ club.name }}
+    </h1>
+
+    <div class="text-right mb-4">
+        <a href="{% url 'add-role' club.id %}"
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+            + Add Role
+        </a>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <table class="min-w-full">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-3 px-4 text-left">Member</th>
+                    <th class="py-3 px-4 text-left">Role</th>
+                    <th class="py-3 px-4 text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in members %}
+                <tr class="border-b">
+                    <td class="py-3 px-4">{{ m.user.username }}</td>
+                    
+                    <td class="py-3 px-4">
+                        {% if m.role %}
+                            <span class="text-green-600 font-semibold">{{ m.role.role_name }}</span>
+                        {% else %}
+                            <span class="text-gray-400 italic">No role</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="py-3 px-4 text-center">
+                        <a href="{% url 'assign-role' club.id %}"
+                           class="bg-indigo-600 text-white px-3 py-2 rounded hover:bg-indigo-700">
+                            Assign Role
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="py-4 text-center text-gray-500">
+                        No members found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

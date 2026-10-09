@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="relative flex justify-center items-center mt-5 mb-5">
+    <div class="flex flex-col items-center">
+        {% if club.image %}
+            <img src="{{ club.image.url }}" alt="{{ club.name }}"
+                 class="max-w-[400px] max-h-[400px] object-contain rounded-2xl shadow-md border-4 border-gray-300" />
+        {% else %}
+            <img src="{% static 'images/default_club.png' %}" alt="{{ club.name }}"
+                 class="max-w-[400px] max-h-[400px] object-contain rounded-2xl shadow-md border-4 border-gray-300" />
+        {% endif %}
+        <div class="mt-4 text-center">
+            <p class="text-4xl font-bold">{{ club.name }}</p>
+        </div>
+
+    </div>
+    <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-300 -z-10"></div>
+</div>
+<div class= "container max-w-5xl mx-auto py-8 px-4 space-y-8">
+<div class="mt-4 mb-5">
+   {% if club.description %}
+    <p id="summaryText" class="text-gray-700 leading-relaxed whitespace-pre-line">
+        {{ club.description|slice:":250" }}{% if club.description|length > 250 %}...
+            <span id="readMore" class="text-blue-600 cursor-pointer">Read More</span>
+        {% endif %}
+    </p>
+    <!-- Full text -->
+    {% if club.description|length > 250 %}
+    <p id="fullText" class="hidden text-gray-700 leading-relaxed whitespace-pre-line">
+        {{ club.description }}
+        <span id="showLess" class="text-blue-600 cursor-pointer"> Show Less</span>
+    </p>
+    {% endif %}
+{% else %}
+    <p class="text-gray-500 italic mt-2">No description available.</p>
+{% endif %}
+</div>
+<div class="flex justify-center max-w-5xl mx-auto text-center gap-4 mt-6">
+{% if club.website %}
+        <a href="{{ club.website }}" target="_blank" class="text-gray-600 hover:text-blue-600 text-xl">
+            <i class="fa-solid fa-globe"></i>
+        </a>
+    {% endif %}
+    {% if club.facebook %}
+        <a href="{{ club.facebook }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-xl">
+            <i class="fa-brands fa-facebook"></i>
+        </a>
+    {% endif %}
+    {% if club.instagram %}
+        <a href="{{ club.instagram }}" target="_blank" class="text-pink-500 hover:text-pink-700 text-xl">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+    {% endif %}
+</div>
+{% if club.email %}
+<div class="flex justify-center max-w-5xl mx-auto text-center gap-4 mt-6">
+    <p>Contact us at: 
+        <span class="text-blue-600 hover:underline">
+            {{ club.email }}
+        </span>
+    </p>
+</div>
+{% else %}
+{% endif %}
+<!-- Join Club Button -->
+<div class="flex justify-center max-w-5xl mx-auto text-center gap-4 mt-6">
+
+{% if user.is_authenticated %}
+
+    {% comment %} CASE 1: Staff/Admin — show only admin controls, NO join button {% endcomment %}
+    {% if user.is_staff %}
+        
+        <a href="{% url 'update-club' club.id %}"
+           class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg">
+            Update Club
+        </a>
+
+        <form action="{% url 'delete-club' club.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit"
+                class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg"
+                onclick="return confirm('Are you sure you want to delete this club?');">
+                Delete Club
+            </button>
+        </form>
+
+        <a href="{% url 'pending-requests' club.id %}"
+           class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-lg">
+            Pending Requests
+        </a>
+        <a href="{% url 'club-members' club.id %}"
+           class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg">
+            Members
+        </a>
+    {# ===== CASE 2: Normal user — show join/cancel/joined buttons ===== #}
+    {% else %}
+        {% if is_member %}
+            <button type="button" class="bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg cursor-not-allowed" disabled>
+                Joined
+            </button>
+
+        {% elif is_pending %}
+            <form action="{% url 'cancel-request' membership_id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="bg-gray-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg">
+                    Cancel Request
+                </button>
+            </form>
+
+        {% else %}
+            <form action="{% url 'join-club' club.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg">
+                    Join Club
+                </button>
+            </form>
+        {% endif %}
+    {% endif %}
+
+{% else %}
+    <a href="{% url 'sign-in' %}"
+       class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg">
+        Login to Join
+    </a>
+{% endif %}
+
+</div>
+<h3 class="text-3xl font-semibold mb-4 text-center">Recent Activities</h3>
+{% include 'lists/eventCards.html' %}
+<h3 class="text-3xl font-semibold mb-4 text-center">Meet Our Executive Committee</h3>
+
+{% if committee %}
+    <ul class="space-y-4">
+        {% for member in committee %}
+        <li class="flex items-center gap-4 bg-gray-100 p-4 rounded-xl shadow-sm">
+            <!-- Profile Picture -->
+            <img 
+                src="{% if member.user.image %}
+            {{ member.user.image.url }}
+            {% else %}
+            {% static 'images/default_dp.jpeg' %}
+            {% endif %}"
+             class="w-16 h-16 rounded-full object-cover"
+            />
+
+            <!-- Name + Role -->
+            <div>
+                <p class="text-lg font-semibold">
+                    {{ member.user.get_full_name|default:member.user.username }}
+                </p>
+                <p class="text-gray-600 text-sm">
+                    {{ member.role.role_name }}
+                </p>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p class="text-center text-gray-500">No executive committee members yet.</p>
+{% endif %}
+
+</div>
+
+<script>
+    const readMore = document.getElementById('readMore');
+    const showLess = document.getElementById('showLess');
+    const summaryText = document.getElementById('summaryText');
+    const fullText = document.getElementById('fullText');
+
+    if (readMore) {
+        readMore.addEventListener('click', () => {
+            summaryText.classList.add('hidden');
+            fullText.classList.remove('hidden');
+        });
+    }
+
+    if (showLess) {
+        showLess.addEventListener('click', () => {
+            fullText.classList.add('hidden');
+            summaryText.classList.remove('hidden');
+        });
+    }
+</script>
+{% endblock %}

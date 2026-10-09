@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="max-w-md mx-auto mt-10 bg-white shadow-lg p-6 rounded-lg">
+    <h2 class="text-2xl font-bold mb-4 text-center">
+        Assign Role — {{ club.name }}
+    </h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label class="block mb-2 font-semibold">Select Member</label>
+        <select name="member" class="w-full border rounded-lg p-2 mb-4">
+            {% for m in members %}
+                <option value="{{ m.id }}">{{ m.user.username }}</option>
+            {% endfor %}
+        </select>
+
+        <label class="block mb-2 font-semibold">Select Role</label>
+        <select name="role" class="w-full border rounded-lg p-2 mb-4">
+            {% for r in roles %}
+                <option value="{{ r.id }}">{{ r.role_name }}</option>
+            {% endfor %}
+        </select>
+
+        <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+            Assign
+        </button>
+    </form>
+</div>
+
+{% endblock %}
