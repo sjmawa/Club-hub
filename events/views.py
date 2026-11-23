@@ -85,16 +85,7 @@ def event_detail(request, event_id):
 @login_required(login_url='sign-in')
 def join_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
-
-    if event.max_capacity and event.attendees.count() >= event.max_capacity:
-        messages.warning(request, f"'{event.title}' has reached maximum capacity.")
-        return redirect('event-detail', event.id)
-
-    participant, created = EventParticipant.objects.get_or_create(
-        event=event,
-        user=request.user,
-        defaults={'status': 'going'}
-    )
+    participant, created = EventParticipant.objects.get_or_create(event=event, user=request.user)
 
     if created:
         messages.success(request, f"You have joined '{event.title}'!")
